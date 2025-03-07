@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Шақыру билеті</title>
+
+    <!-- Google шрифттерін қосу -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Бет стилі */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Негізгі контейнер */
+        .invite-container {
+            background-color: #fff;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        /* Тақырып бөлімі */
+        .invite-header {
+            background: #ff7e5f;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+        }
+        .invite-header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        /* Мазмұн бөлімі */
+        .invite-body {
+            padding: 20px;
+            text-align: center;
+        }
+        .invite-body h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .invite-body p {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        /* Форма стилі */
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        input[type="text"], select {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button {
+            background: #ff7e5f;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #e06c54;
+        }
+
+        /* Хабарлама (жіберілген соң) */
+        #responseMessage {
+            margin-top: 10px;
+            font-weight: 500;
+            color: #28a745; /* жасыл түс */
+        }
+
+        /* Төменгі бөлім */
+        .invite-footer {
+            background: #ff7e5f;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="invite-container">
+
+    <!-- Жоғарғы тақырып -->
+    <div class="invite-header">
+        <h1>Арнайы шақыру</h1>
+        <p>Құрметті қонақ, сізді шақырамыз!</p>
+    </div>
+
+    <!-- Негізгі мәтін -->
+    <div class="invite-body">
+        <h2>Мерекелік кеш</h2>
+        <p><strong>Күні:</strong> 15 наурыз 2025</p>
+        <p><strong>Уақыты:</strong> 18:00</p>
+        <p><strong>Өтетін орны:</strong> Алматы, Royal Hall</p>
+        <p>Сіз бұл мерекеге келе аласыз ба?</p>
+
+        <!-- Форма (Атыңыз, Келемін/Келмеймін) -->
+        <form id="inviteForm">
+            <input type="text" id="name" placeholder="Атыңызды енгізіңіз" required />
+            <select id="attendance">
+                <option value="Келемін">Келемін</option>
+                <option value="Келмеймін">Келмеймін</option>
+            </select>
+            <button type="submit">Жіберу</button>
+        </form>
+
+        <!-- Жауап -->
+        <p id="responseMessage"></p>
+    </div>
+
+    <!-- Төменгі бөлім -->
+    <div class="invite-footer">
+        <p>Сізді асыға күтеміз!</p>
+    </div>
+
+</div>
+
+<script>
+    // Форма жіберу оқиғасы
+    document.getElementById("inviteForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // Пайдаланушының енгізген деректері
+        var name = document.getElementById("name").value;
+        var attendance = document.getElementById("attendance").value;
+
+        // Google Forms-тың "formResponse" сілтемесі
+        // МЫСАЛ: https://docs.google.com/forms/d/e/1FAIpQLSdGS.../formResponse
+        var formUrl = "YOUR_GOOGLE_FORM_RESPONSE_URL_HERE";
+
+        // Мұнда Google Forms-тағы entry ID мәндерін өзіңізге сәйкес ауыстырыңыз:
+        // entry.123456789 - Аты
+        // entry.987654321 - Қатысуы (Келемін/Келмеймін)
+        var formData = new FormData();
+        formData.append("entry.123456789", name);
+        formData.append("entry.987654321", attendance);
+
+        // Fetch арқылы POST запрос жіберу
+        fetch(formUrl, {
+            method: "POST",
+            body: formData,
+            mode: "no-cors"
+        })
+        .then(() => {
+            // Сәтті жіберілсе
+            document.getElementById("responseMessage").innerText = "Жауабыңыз сақталды! Рахмет!";
+            document.getElementById("inviteForm").reset();
+        })
+        .catch(() => {
+            // Қате болған жағдайда
+            document.getElementById("responseMessage").innerText = "Қате кетті, қайта көріңіз!";
+        });
+    });
+</script>
+
+</body>
+</html>
